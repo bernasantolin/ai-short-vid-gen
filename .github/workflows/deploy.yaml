@@ -5,7 +5,7 @@ on:
     branches:
       - main
 
-job:
+jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
@@ -29,20 +29,31 @@ job:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: antolin0916/ai-vid-gen
+          tags: antolin0916/ai-vid-gen:latest
 
-deploy:
-  needs: [build-and-push]
-  runs-on: ubuntu-latest
+  deploy:
+    needs: [build-and-push]
+    runs-on: ubuntu-latest
 
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    
-    - name: Copy Docker Compose & Script to Server
-      uses: appleboy/scp-action@v0.1.7
-      with: 
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: 'docker-compose.yaml, scripts/deploy.sh'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Copy Docker Compose & Script to Server
+        uses: appleboy/scp-action@v0.1.7
+        with: 
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: 'docker-compose.yaml, scripts/deploy.sh'
+          target: '~/deploy'
+
+      - name: Run Deployment Script
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            chmod +x ~/deploy/deploy.sh
+            ~/deploy/deploy.sh
