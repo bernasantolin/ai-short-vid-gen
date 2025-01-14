@@ -24,12 +24,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          push: true
-          tags: antolin0916/ai-vid-gen:latest
+     
       - name: Setup environment variables
         run: |
           echo "NEXT_PUBLIC_DRIZZLE_DB_URL=${{ secrets.NEXT_PUBLIC_DRIZZLE_DB_URL }}" >> .env
@@ -44,6 +39,15 @@ jobs:
           echo "NEXT_PUBLIC_REPLICATE_API_TOKEN=${{ secrets.NEXT_PUBLIC_REPLICATE_API_TOKEN }}" >> .env
           echo "NEXT_PUBLIC_OPENAI_API_KEY=${{ secrets.NEXT_PUBLIC_OPENAI_API_KEY }}" >> .env
 
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: antolin0916/ai-vid-gen:latest
+          cache-from: type=registry,ref=antolin0916/ai-vid-gen:cache
+          cache-to: type=registry,ref=antolin0916/ai-vid-gen:cache,mode=max
+     
   deploy:
     needs: [build-and-push]
     runs-on: ubuntu-latest
@@ -58,8 +62,8 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: 'docker-compose.yaml, scripts/deploy.sh'
-          target: '~/deploy'
+          source: "docker-compose.yaml,scripts/deploy.sh"
+          target: "~/deploy"
 
       - name: Run Deployment Script
         uses: appleboy/ssh-action@v0.1.8
