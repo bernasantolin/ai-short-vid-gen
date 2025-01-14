@@ -21,7 +21,7 @@ FROM nginx:alpine AS runner
 WORKDIR /usr/share/nginx/html
 
 # Remove default Nginx static files
-RUN rm -rf ./*
+# RUN rm -rf ./*
 
 # Copy Nginx config
 COPY nginx.conf /etc/nginx/nginx.conf
