@@ -1,38 +1,37 @@
-# Stage 1: Base stage with Node.js Alpine image
+# Stage 1: Build Stage
 FROM node:20-alpine AS builder
 
-# Set the working directory for subsequent instructions
 WORKDIR /builder
 
-# Copy dependencies files first
+# Copy package files and install dependencies
 COPY package.json package-lock.json ./
 
-# Install dependencies
 RUN npm install
 
-# Copy the rest of the application code
+# Copy source code
 COPY . .
 
-# Build the application
+# Build the Next.js app
 RUN npm run build
 
-# Stage 2: Runner stage starts from the nginx:alpine image
+# Stage 2: Nginx + Next.js Reverse Proxy
 FROM nginx:alpine AS runner
 
-# Set the working directory in the container
+# Set working directory to Nginx root folder
 WORKDIR /usr/share/nginx/html
 
-# Remove the default Nginx static assets
+# Remove default Nginx static files
 RUN rm -rf ./*
 
-# Copy built artifacts from the builder stage
-COPY --from=builder /builder/.next /usr/share/nginx/html
-
-# Copy the Nginx configuration file
+# Copy Nginx config
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Inform Docker that the container is listening on port 80 at runtime
+# Copy the build output to Nginx static folder (for static content only)
+COPY --from=builder /builder/.next /usr/share/nginx/html/.next
+COPY --from=builder /builder/public /usr/share/nginx/html/public
+
+# Expose port 80
 EXPOSE 80
 
-# Define the command to run the app
+# Run Nginx as the entrypoint
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
