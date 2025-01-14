@@ -62,8 +62,8 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "docker-compose.yaml,scripts/deploy.sh"
-          target: "~/deploy"
+          source: "docker/docker-compose.yaml,scripts/deploy.sh"
+          target: "/root/deploy"
 
       - name: Run Deployment Script
         uses: appleboy/ssh-action@v0.1.8
