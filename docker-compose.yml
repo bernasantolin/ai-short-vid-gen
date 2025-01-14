@@ -1,6 +1,8 @@
 name: ai-vid-gen
-service:
-  app: 
-    image: antolin0916/ai-vid-gen
-    ports: 
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
       - '3000:80'
