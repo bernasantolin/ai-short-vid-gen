@@ -72,5 +72,5 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            chmod +x ~/deploy/deploy.sh
-            ~/deploy/deploy.sh
+            chmod +x ~/deploy/scripts/deploy.sh
+            ~/deploy/scripts/deploy.sh
