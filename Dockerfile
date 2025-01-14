@@ -5,7 +5,7 @@ FROM node:20-alpine AS builder
 WORKDIR /builder
 
 # Copy dependencies files first
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json ./ 
 
 # Install dependencies
 RUN npm install
@@ -34,8 +34,14 @@ COPY --from=builder /builder/package-lock.json /usr/share/nginx/html/package-loc
 # Copy the Nginx configuration file
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Inform Docker that the container is listening on port 80 at runtime
-EXPOSE 80
+# Install Node.js in the Nginx container to run the app
+RUN apk add --no-cache nodejs npm
 
-# Define the command to run the app
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+# Install necessary packages for running Next.js
+RUN npm install --prefix /usr/share/nginx/html
+
+# Expose ports
+EXPOSE 80 3000
+
+# Start both Nginx and the Next.js app
+CMD ["/bin/sh", "-c", "npm start --prefix /usr/share/nginx/html & nginx -g 'daemon off;'"]
