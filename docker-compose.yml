@@ -6,3 +6,5 @@ services:
       dockerfile: Dockerfile
     ports:
       - '3000:80'
+    volumes:
+    - /path/to/your/public:/usr/share/nginx/html/public
