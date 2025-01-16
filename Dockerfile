@@ -13,6 +13,11 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
+ARG CLERK_SECRET_KEY
+RUN touch .env.local
+RUN echo "CLERK_SECRET_KEY" >> .env.local
+RUN cat .env.local
+
 # Build the application
 RUN npm run build
 
@@ -25,13 +30,17 @@ WORKDIR /usr/share/nginx/html
 # Remove the default Nginx static assets
 RUN rm -rf ./*
 
+ENV NODE_ENV production
+
+COPY --from=builder /app/public ./public
+
 # Copy built artifacts from the builder stage
 COPY --from=builder /builder/.next /usr/share/nginx/html/.next
 COPY --from=builder /builder/public /usr/share/nginx/html/public
 COPY --from=builder /builder/package.json /usr/share/nginx/html/package.json
 COPY --from=builder /builder/package-lock.json /usr/share/nginx/html/package-lock.json
 COPY --from=builder /builder/.next/static /usr/share/nginx/html/.next/static
-
+COPY .env /usr/share/nginx/html/.env
 # Copy the Nginx configuration file
 COPY nginx.conf /etc/nginx/nginx.conf
 
