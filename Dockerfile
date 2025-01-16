@@ -44,10 +44,10 @@ COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80 3000
 
 # Start both Nginx and the Next.js app
-# CMD ["/bin/sh", "-c", "npm start --prefix /usr/share/nginx/html & nginx -g 'daemon off;'"]
+CMD ["/bin/sh", "-c", "npm start --prefix /usr/share/nginx/html & nginx -g 'daemon off;'"]
 
 # Define the command to run the app
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+# ENTRYPOINT ["nginx", "-g", "daemon off;"]
 # Build stage
 
 
