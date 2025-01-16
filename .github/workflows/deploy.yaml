@@ -25,29 +25,21 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       
-      # - name: Make envfile
-      #   uses: SpicyPizza/create-envfile@v1
-      #   with:
-      #     envkey_CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
-      #     file_name: .env
-
-      # - name: Setup environment variables
-      #   env: 
-      #     CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
-      #   run: |
-      #     touch .env.local
-      #     echo "NEXT_PUBLIC_DRIZZLE_DB_URL=${{ secrets.NEXT_PUBLIC_DRIZZLE_DB_URL }}" >> .env.local
-      #     echo "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}" >> .env.local
-      #     echo "NEXT_PUBLIC_CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}" >> .env.local
-      #     echo "NEXT_PUBLIC_CLERK_SIGN_IN_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_IN_URL }}" >> .env.local
-      #     echo "NEXT_PUBLIC_CLERK_SIGN_UP_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_UP_URL }}" >> .env.local
-      #     echo "NEXT_PUBLIC_GEMINI_API_KEY=${{ secrets.NEXT_PUBLIC_GEMINI_API_KEY }}" >> .env.local
-      #     echo "NEXT_PUBLIC_GOOGLE_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_API_KEY }}" >> .env.local
-      #     echo "NEXT_PUBLIC_FIREBASE_API_KEY=${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}" >> .env.local
-      #     echo "NEXT_PUBLIC_CAPTION_API=${{ secrets.NEXT_PUBLIC_CAPTION_API }}" >> .env.local
-      #     echo "NEXT_PUBLIC_REPLICATE_API_TOKEN=${{ secrets.NEXT_PUBLIC_REPLICATE_API_TOKEN }}" >> .env.local
-      #     echo "NEXT_PUBLIC_OPENAI_API_KEY=${{ secrets.NEXT_PUBLIC_OPENAI_API_KEY }}" >> .env.local
-      #     cat .env.local
+      - name: Setup environment variables
+        run: |
+          touch .env.local
+          echo "NEXT_PUBLIC_DRIZZLE_DB_URL=${{ secrets.NEXT_PUBLIC_DRIZZLE_DB_URL }}" >> .env.local
+          echo "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}" >> .env.local
+          echo "NEXT_PUBLIC_CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}" >> .env.local
+          echo "NEXT_PUBLIC_CLERK_SIGN_IN_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_IN_URL }}" >> .env.local
+          echo "NEXT_PUBLIC_CLERK_SIGN_UP_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_UP_URL }}" >> .env.local
+          echo "NEXT_PUBLIC_GEMINI_API_KEY=${{ secrets.NEXT_PUBLIC_GEMINI_API_KEY }}" >> .env.local
+          echo "NEXT_PUBLIC_GOOGLE_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_API_KEY }}" >> .env.local
+          echo "NEXT_PUBLIC_FIREBASE_API_KEY=${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}" >> .env.local
+          echo "NEXT_PUBLIC_CAPTION_API=${{ secrets.NEXT_PUBLIC_CAPTION_API }}" >> .env.local
+          echo "NEXT_PUBLIC_REPLICATE_API_TOKEN=${{ secrets.NEXT_PUBLIC_REPLICATE_API_TOKEN }}" >> .env.local
+          echo "NEXT_PUBLIC_OPENAI_API_KEY=${{ secrets.NEXT_PUBLIC_OPENAI_API_KEY }}" >> .env.local
+          cat .env.local
           
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -57,17 +49,6 @@ jobs:
           tags: antolin0916/ai-vid-gen:latest
           cache-from: type=registry,ref=antolin0916/ai-vid-gen:cache
           cache-to: type=registry,ref=antolin0916/ai-vid-gen:cache,mode=max
-     
-       # Build and push the Docker image
-      # - name: Build and push Docker image
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: .
-      #     push: true
-      #     tags: antolin0916/ai-vid-gen:latest
-      #     cache-from: type=registry,ref=antolin0916/ai-vid-gen:cache
-      #     cache-to: type=registry,ref=antolin0916/ai-vid-gen:cache,mode=max
-    
   deploy:
     needs: [build-and-push]
     runs-on: ubuntu-latest
