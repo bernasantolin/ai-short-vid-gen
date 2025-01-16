@@ -13,11 +13,6 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-ARG CLERK_SECRET_KEY
-RUN touch .env.local
-RUN echo "CLERK_SECRET_KEY" >> .env.local
-RUN cat .env.local
-
 # Build the application
 RUN npm run build
 
@@ -31,8 +26,6 @@ WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 
 ENV NODE_ENV production
-
-COPY --from=builder /app/public ./public
 
 # Copy built artifacts from the builder stage
 COPY --from=builder /builder/.next /usr/share/nginx/html/.next
