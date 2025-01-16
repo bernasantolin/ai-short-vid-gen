@@ -1,24 +1,26 @@
-# name: ai-vid-gen
-# services:
-#   app:
-#     build:
-#       context: .
-#       dockerfile: Dockerfile
-#     ports:
-#       - '3000:80'
-version: '3'
+name: ai-vid-gen
 services:
-  nextjs:
-    build: .
-    container_name: ai-vid-gen
-    env_file:
-      - .env.local  # Path to your .env.local file
-  nginx:
-    image: nginx:alpine
-    container_name: nginx
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      env_file:
+        - .env.local  # Path to your .env.local file
     ports:
-      - "3000:80"
-    depends_on:
-      - nextjs
-    environment:
-      - NODE_ENV=production
+      - '3000:80'
+# version: '3'
+# services:
+#   nextjs:
+#     build: .
+#     container_name: ai-vid-gen
+#     env_file:
+#       - .env.local  # Path to your .env.local file
+#   nginx:
+#     image: nginx:alpine
+#     container_name: nginx
+#     ports:
+#       - "3000:80"
+#     depends_on:
+#       - nextjs
+#     environment:
+#       - NODE_ENV=production
