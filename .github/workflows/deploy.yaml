@@ -57,21 +57,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       
-      - name: Copy Docker Compose & Script to Server
-        uses: appleboy/scp-action@v0.1.7
-        with: 
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "scripts/deploy.sh"
-          target: "/root/deploy"
+      # - name: Copy Docker Compose & Script to Server
+      #   uses: appleboy/scp-action@v0.1.7
+      #   with: 
+      #     host: ${{ secrets.SSH_HOST }}
+      #     username: ${{ secrets.SSH_USER }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     source: "docker/docker-compose.yaml,scripts/deploy.sh"
+      #     target: "/root/deploy"
 
-      - name: Run Deployment Script
-        uses: appleboy/ssh-action@v0.1.8
+      # - name: Run Deployment Script
+      #   uses: appleboy/ssh-action@v0.1.8
+      #   with:
+      #     host: ${{ secrets.SSH_HOST }}
+      #     username: ${{ secrets.SSH_USER }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     script: |
+      #       chmod +x ~/deploy/scripts/deploy.sh
+      #       ~/deploy/scripts/deploy.sh
+
+      # SSH into the VPS to pull the latest image and restart the container
+      - name: SSH and Restart Container
+        uses: appleboy/ssh-action@v0.1.1
         with:
-          host: ${{ secrets.SSH_HOST }}
+          host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            chmod +x ~/deploy/scripts/deploy.sh
-            ~/deploy/scripts/deploy.sh
+            docker pull ai-vid-gen-app
+            docker-compose down
+            docker-compose up -d
