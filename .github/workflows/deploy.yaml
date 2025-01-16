@@ -63,7 +63,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "docker/docker-compose.yaml,scripts/deploy.sh"
+          source: "scripts/deploy.sh"
           target: "/root/deploy"
 
       - name: Run Deployment Script
