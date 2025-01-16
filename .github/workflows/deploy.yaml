@@ -12,7 +12,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      
+        run: docker-compose up -d
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -49,16 +50,6 @@ jobs:
       #     echo "NEXT_PUBLIC_OPENAI_API_KEY=${{ secrets.NEXT_PUBLIC_OPENAI_API_KEY }}" >> .env.local
       #     cat .env.local
           
-      # - name: Build and push Docker image
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: .
-      #     push: true
-      #     tags: antolin0916/ai-vid-gen:latest
-      #     cache-from: type=registry,ref=antolin0916/ai-vid-gen:cache
-      #     cache-to: type=registry,ref=antolin0916/ai-vid-gen:cache,mode=max
-     
-       # Build and push the Docker image
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -67,13 +58,17 @@ jobs:
           tags: antolin0916/ai-vid-gen:latest
           cache-from: type=registry,ref=antolin0916/ai-vid-gen:cache
           cache-to: type=registry,ref=antolin0916/ai-vid-gen:cache,mode=max
-
-      # Set up Docker Compose
-      - name: Set up Docker Compose
-        uses: docker/compose-action@v2
-        with:
-          version: '1.29.2'
-          
+     
+       # Build and push the Docker image
+      # - name: Build and push Docker image
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: .
+      #     push: true
+      #     tags: antolin0916/ai-vid-gen:latest
+      #     cache-from: type=registry,ref=antolin0916/ai-vid-gen:cache
+      #     cache-to: type=registry,ref=antolin0916/ai-vid-gen:cache,mode=max
+    
   deploy:
     needs: [build-and-push]
     runs-on: ubuntu-latest
