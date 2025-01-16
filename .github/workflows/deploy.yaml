@@ -24,7 +24,13 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-     
+      
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          file_name: .env
+
       - name: Setup environment variables
         env: 
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
