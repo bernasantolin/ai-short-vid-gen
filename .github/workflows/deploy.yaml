@@ -26,6 +26,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
      
       - name: Setup environment variables
+        env: 
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
         run: |
           touch .env.local
           echo "NEXT_PUBLIC_DRIZZLE_DB_URL=${{ secrets.NEXT_PUBLIC_DRIZZLE_DB_URL }}" >> .env.local
