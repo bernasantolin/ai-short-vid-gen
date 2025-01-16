@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
+      
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -24,7 +24,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
+     
       - name: Setup environment variables
         run: |
           touch .env.local
@@ -49,6 +49,7 @@ jobs:
           tags: antolin0916/ai-vid-gen:latest
           cache-from: type=registry,ref=antolin0916/ai-vid-gen:cache
           cache-to: type=registry,ref=antolin0916/ai-vid-gen:cache,mode=max
+     
   deploy:
     needs: [build-and-push]
     runs-on: ubuntu-latest
@@ -57,33 +58,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       
-      # - name: Copy Docker Compose & Script to Server
-      #   uses: appleboy/scp-action@v0.1.7
-      #   with: 
-      #     host: ${{ secrets.SSH_HOST }}
-      #     username: ${{ secrets.SSH_USER }}
-      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     source: "docker/docker-compose.yaml,scripts/deploy.sh"
-      #     target: "/root/deploy"
+      - name: Copy Docker Compose & Script to Server
+        uses: appleboy/scp-action@v0.1.7
+        with: 
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "docker/docker-compose.yaml,scripts/deploy.sh"
+          target: "/root/deploy"
 
-      # - name: Run Deployment Script
-      #   uses: appleboy/ssh-action@v0.1.8
-      #   with:
-      #     host: ${{ secrets.SSH_HOST }}
-      #     username: ${{ secrets.SSH_USER }}
-      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     script: |
-      #       chmod +x ~/deploy/scripts/deploy.sh
-      #       ~/deploy/scripts/deploy.sh
-
-      # SSH into the VPS to pull the latest image and restart the container
-      - name: SSH and Restart Container
-        uses: appleboy/ssh-action@v0.1.1
+      - name: Run Deployment Script
+        uses: appleboy/ssh-action@v0.1.8
         with:
-          host: ${{ secrets.VPS_HOST }}
+          host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker pull ai-vid-gen-app
-            docker-compose down
-            docker-compose up -d
+            chmod +x ~/deploy/scripts/deploy.sh
+            ~/deploy/scripts/deploy.sh
