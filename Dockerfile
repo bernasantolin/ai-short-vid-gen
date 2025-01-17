@@ -31,6 +31,7 @@ COPY --from=builder /builder/public /usr/share/nginx/html/public
 COPY --from=builder /builder/package.json /usr/share/nginx/html/package.json
 COPY --from=builder /builder/package-lock.json /usr/share/nginx/html/package-lock.json
 COPY --from=builder /builder/.next/static /usr/share/nginx/html/.next/static
+COPY --from=builder /builder/.next/static /usr/share/nginx/html/public
 
 # Copy the Nginx configuration file
 COPY nginx.conf /etc/nginx/nginx.conf
