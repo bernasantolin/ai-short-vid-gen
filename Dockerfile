@@ -34,7 +34,7 @@ COPY --from=builder /builder/.next/static /usr/share/nginx/html/.next/static
 
 # Copy the Nginx configuration file
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY .next /usr/share/nginx/html/.next
+COPY /.next /usr/share/nginx/html/.next
 
 # Install Node.js in the Nginx container to run the app
 RUN apk add --no-cache nodejs npm
